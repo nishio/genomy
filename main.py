@@ -12,14 +12,6 @@ IDENTIFIER = re.compile(sIDENTIFIER)
 ENHANCER = re.compile("\+\s*(%s)" % sIDENTIFIER)
 SUPPRESSOR = re.compile("-\s*(%s)" % sIDENTIFIER)
 BODY = re.compile(":\s*(%s)" % sIDENTIFIER)
-CODE = """
-+START :OUT_H
-+OUT_H :OUT_E
-+OUT_E :OUT_L
--SUP_L +OUT_L :OUT_L
-+OUT_L :SUP_L
--SUP_O +SUP_L :OUT_O :SUP_O
-"""
 NONE = "NONE" # it always be in environment
 
 
