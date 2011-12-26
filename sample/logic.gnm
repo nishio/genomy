@@ -1,0 +1,10 @@
+# IN_A IN_B
+
+# keep input variable
++IN_A :IN_A
++IN_B :IN_B
+
+-IN_A +NONE :NOT_A
+-IN_B +NONE :NOT_B
++IN_A +IN_B :A_OR_B
+-NOT_A -NOT_B +NONE :A_AND_B

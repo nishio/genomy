@@ -3,8 +3,10 @@
 Genomy
 A programming language inspired by genomics
 """
-
 import re
+import sys
+import argparse
+
 sIDENTIFIER = "[^-+#: ]+"
 IDENTIFIER = re.compile(sIDENTIFIER)
 ENHANCER = re.compile("\+\s*(%s)" % sIDENTIFIER)
@@ -19,6 +21,7 @@ CODE = """
 -SUP_O +SUP_L :OUT_O :SUP_O
 """
 NONE = "NONE" # it always be in environment
+
 
 class Gene(object):
     def __init__(self, body, enhancer, suppressor):
@@ -43,7 +46,7 @@ class Gene(object):
 
 def parse(code):
     genes = []
-    for line in CODE.split("\n"):
+    for line in code.split("\n"):
         if line.startswith("#"):
             continue # comment line
 
@@ -62,20 +65,37 @@ def run(genes, env=[]):
     return set(g(env) for g in genes)
 
 
-def show_env(env):
+def repr_env(env):
     """
     ignore "NONE" protein and pretty print
     """
     if NONE in env:
         env = env.copy()
         env.remove(NONE)
-    print " ".join(sorted(env))
+    return " ".join(sorted(env))
 
-genes = parse(CODE)
-print genes
-env = set(["START"])
-show_env(env)
-for i in range(10):
-    env = run(genes, env)
-    show_env(env)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', '--file', help='read code from file')
+    parser.add_argument('-n', '--num', help='number of iteration', default=10)
+    parser.add_argument('--show_genes', help='show genes before run', action='store_true')
+    parser.add_argument('environment', metavar='P', type=str, nargs='*',
+                        help='proteins in initial environment')
+
+    args = parser.parse_args()
+    if args.file:
+        code = file(args.file).read()
+    else:
+        code = sys.stdin.read()
+    genes = parse(code)
+
+    if args.show_genes:
+        print genes
+
+    env = set(args.environment)
+    print 0, repr_env(env)
+    for i in range(10):
+        env = run(genes, env)
+        print i + 1, repr_env(env)
 
